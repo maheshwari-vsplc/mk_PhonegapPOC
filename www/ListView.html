@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+            <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+                <title></title>
+                
+                <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+                    <link href="css/style.css" rel="stylesheet">
+                        
+                        <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+                         <link href="css/ionic.app.css" rel="stylesheet">
+                         -->
+                        
+                        
+                        <!-- cordova script (this will be a 404 during development) -->
+                        <script src="cordova.js"></script>
+                        <link href="css/style.css" rel="stylesheet">
+                            <!-- your app's js -->
+                            <script src="js/app.js"></script>
+                            
+                            <script type="text/javascript" language="JavaScript">
+                                function closeLogin()
+                                {
+                                    try{
+                                        if(!!window.openDatabase)
+                                        {
+                                            var createDB = window.sqlitePlugin.openDatabase({name : "SqliteDB"});
+                                            
+                                        }else
+                                        {
+                                            navigator.notification.alert("Local database is not supported by your device.");
+                                        }
+                                    }
+                                    catch(error)
+                                    {
+                                        console.log("ERROR:" + error.message);
+                                    }
+                                    
+                                    var fname = document.getElementById("firstName").value;
+                                    var lname = document.getElementById("lastName").value;
+                                    var emailID = document.getElementById("email").value;
+                                    var phoneNumber = document.getElementById("phone").value;
+                                    
+                                    if(fname.length == 0 && lname.length == 0 && emailID.length == 0 && phoneNumber.length == 0)
+                                    {
+                                        navigator.notification.alert("Please enter all details.");
+                                    }
+                                    else if(fname.length == 0)
+                                    {
+                                        navigator.notification.alert("Please enter first name.")
+                                    }
+                                    else if(lname.length == 0){
+                                        navigator.notification.alert("Please enter last name.")
+                                    }
+                                    else if(emailID.length == 0 || validateEmail(document.getElementById("email").value) == false){
+                                        navigator.notification.alert("Please enter valid email address.")
+                                    }
+                                    else if(phoneNumber.length == 0 || phonenumber(document.getElementById("phone").value) ==  false){
+                                        navigator.notification.alert("Please enter valid phone number.")
+                                    }
+                                    else{
+                                        createDB.transaction(function(tx)
+                                                             {
+                                                             tx.executeSql('CREATE TABLE IF NOT EXISTS NAME (id integer primary key, firstname text, lastname text, phoneNumber text, email text)');
+                                                             tx.executeSql('INSERT INTO NAME (firstname,lastname,phoneNumber,email) VALUES (?,?,?,?)', [fname, lname,phoneNumber,emailID]);
+                                                             console.log("value inserted");
+                                                             window.location.href = "index.html";
+                                                             });
+                                    }
+                                    
+                                    
+                                }
+                            function validateEmail(emailField){
+                                var reg = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+                                
+                                if (reg.test(emailField) == false)
+                                {
+                                    
+                                    return false;
+                                }
+                                
+                                return true;
+                                
+                            }
+                            
+                            function phonenumber(inputtxt)
+                            {
+                                var phoneno = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+                                if(phoneno.test(inputtxt))
+                                   {
+                                   return true;
+                                   }
+                                   else
+                                   {
+                                   return false;
+                                   }
+                                   }
+                                   </script>
+                            
+                            </head>
+    <body ng-app="starter" class="platform-ios platform-cordova platform-webview">
+        
+        
+        <div class="navBar" style="color:#5773FB">
+            <a class="backButton" href="index.html">
+                <input type="image" src="img/back-button.png" alt="" width="48" height="48">
+                    </a>
+
+            <h1  style="color:#FFFFFF" align="center"> </h1>
+        </div>
+        
+        <br>
+        
+        <input id="firstName" class="textField" type="text" placeholder="First Name">
+            
+            <br>
+            <br>
+            
+            <input id="lastName" class="textField" type="text" placeholder="Last Name">
+                
+                <br>
+                <br>
+                
+                <input id="email" class="textField" type="email" placeholder="Email">
+                    
+                    <br>
+                    <br>
+                    
+                    <input id="phone" class="textField" type="tel" placeholder="Mobile">
+                        
+                        <br>
+                        <br>
+                        <!--<a class="button button-full button-positive" ng-click="Submit"> Submit</a>-->
+                        <!-- <button class="button button-full button-positive" on-click="closeLogin()">Submit</button>-->
+                        <button type="button" class="submitButton" onclick="closeLogin()">Submit</button>
+                        
+                        
+                        
+                        </script>
+                        </body>
+</html>

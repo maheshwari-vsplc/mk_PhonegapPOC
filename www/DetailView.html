@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+            <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+                <title></title>
+                
+                <link href="css/style.css" rel="stylesheet" href="css/style.css">
+                    
+                    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+                     <link href="css/ionic.app.css" rel="stylesheet">
+                     -->
+                    
+                    <!-- ionic/angularjs js -->
+                    <script src="lib/ionic/js/ionic.bundle.js"></script>
+                    
+                    <!-- cordova script (this will be a 404 during development) -->
+                    <script src="cordova.js"></script>
+                    
+                    <!-- your app's js -->
+                    <script src="js/app.js"></script>
+                    <script src="cordova.js"></script>
+                    
+                    <script type="text/javascript" language="JavaScript">
+                        
+                        document.addEventListener("deviceready", function()
+                                                  {
+                                                  pictureSource=navigator.camera.PictureSourceType;
+                                                  destinationType=navigator.camera.DestinationType;
+                                                  getData();
+                                                  
+                                                  },true);
+                                                  
+                                                  function getData()
+                                                  {
+                                                      
+                                                      var key = localStorage.getItem("Key-name");
+                                                      
+                                                      
+                                                      
+                                                      var createDB = window.sqlitePlugin.openDatabase({name : "SqliteDB"});
+                                                      createDB.transaction(function (tx)
+                                                                           {
+                                                                           tx.executeSql('SELECT * FROM NAME WHERE lastname = '+ "'"+key+"'", [], function (tx, results)
+                                                                                         {
+                                                                                         var firstName = document.getElementById("firstName");
+                                                                                         var email = document.getElementById("email");
+                                                                                         var phoneNo = document.getElementById("phone");
+                                                                                         // alert(results.rows.item(0).email);
+                                                                                         firstName.innerHTML = "Name : " + results.rows.item(0).firstname + " "+ results.rows.item(0).lastname;
+                                                                                         email.innerHTML = "Email : " + results.rows.item(0).email;
+                                                                                         phoneNo.innerHTML = "Phone No. : "+ results.rows.item(0).phoneNumber;
+                                                                                         
+                                                                                         });
+                                                                           });
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+                                                                           
+                                                  }
+                    function capturePhoto(){
+                        
+                          navigator.notification.alert("Please enter first name.")
+                        navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50 });
+                    }
+                    function onPhotoDataSuccess(imageData) {
+                        // Get image handle
+                        //
+                        var smallImage = document.getElementById('smallImage');
+                        // Unhide image elements
+                        //
+                        smallImage.style.display = 'block';
+                        // Show the captured photo
+                        // The inline CSS rules are used to resize the image
+                        //
+                        smallImage.src = "data:image/jpeg;base64," + imageData;
+                    }
+                    
+                        </script>
+                    </head>
+    <body ng-app="starter" class="platform-ios platform-cordova platform-webview">
+        
+        <div class="navBar" style="color:#5773FB">
+            <a class="backButton" href="index.html">
+                <input type="image" src="img/back-button.png" alt="" width="48" height="48">
+                    </a>
+            <h1  style="color:#FFFFFF" align="center"></h1>
+        </div>
+        <h3 id = "firstName"></h3>
+        <br>
+        <h3 id = "email"></h3>
+        <br>
+        <h3 id = "phone"></h3>
+        <br>
+        <!--<button class="submitButton" onclick="capturePhoto()">Capture Photo</button>-->
+    </body>
+</html>
